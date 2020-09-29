@@ -4,6 +4,7 @@ import com.example.toyforhrteamproject.dao.RegistrationTokenRepo;
 import com.example.toyforhrteamproject.dao.UserRepo;
 import com.example.toyforhrteamproject.domain.RegistrationTokenEntity;
 import com.example.toyforhrteamproject.domain.UserEntity;
+import com.example.toyforhrteamproject.response.AuthenticateUserResponse;
 import com.example.toyforhrteamproject.security.util.JavaMailUtil;
 import com.example.toyforhrteamproject.security.util.RandomStringGeneratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,8 @@ public class RegistrationService {
         }
     }
 
-    public boolean authenticateByTokenAndSave(String username, String email, String password, String registrationToken) {
+    public AuthenticateUserResponse authenticateByTokenAndSave(String username, String email, String password, String registrationToken) {
+        AuthenticateUserResponse authenticateUserResponse = AuthenticateUserResponse.builder().build();
         UserEntity userEntity = userRepo.findByEmail(email);
         RegistrationTokenEntity registrationTokenEntity = registrationTokenRepo.findByEmail(email);
         if (registrationTokenEntity.getToken().equals(registrationToken)) {
@@ -75,8 +77,12 @@ public class RegistrationService {
             newUserEntity.setModificationDate(new java.sql.Date(Calendar.getInstance().getTime().getTime()));
             newUserEntity.setCreateDate(new java.sql.Date(Calendar.getInstance().getTime().getTime()));
             userRepo.save(newUserEntity);
-            return true;
+            authenticateUserResponse.setStatus(true);
+            authenticateUserResponse.setUsername(username);
+            authenticateUserResponse.setUserId(newUserEntity.getUserId());
+            return authenticateUserResponse;
         }
-        return false;
+        authenticateUserResponse.setStatus(false);
+        return authenticateUserResponse;
     }
 }

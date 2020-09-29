@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApplicationWorkFlowRepo extends JpaRepository<ApplicationWorkFlowEntity, Integer> {
+    ApplicationWorkFlowEntity findByEmpId(int empId);
 }

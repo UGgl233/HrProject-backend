@@ -45,6 +45,9 @@ public class UserRoleService {
     @Autowired
     private FacilityReportRepo facilityReportRepo;
 
+    @Autowired
+    private ApplicationWorkFlowRepo applicationWorkFlowRepo;
+
     // @TODO: Reorg
     @Autowired
     private VisaStatusRepo visaStatusRepo;
@@ -68,6 +71,7 @@ public class UserRoleService {
                 authenticateUserResponse.setStatus(true);
                 authenticateUserResponse.setUserId(user.getUserId());
                 authenticateUserResponse.setUsername(user.getUsername());
+                authenticateUserResponse.setRole(getUserRoleByUsername(username));
                 return authenticateUserResponse;
             } else {
                 authenticateUserResponse.setStatus(false);
@@ -103,8 +107,8 @@ public class UserRoleService {
         PersonEntity pp = personRepo.findByEmail(email);
 
         // save personId in the user table
-//        UserEntity userEntity = userRepo.findByEmail(email);
-//        userEntity.setPersonId(pp.getPersonId());
+        UserEntity userEntity = userRepo.findByEmail(email);
+        userEntity.setPersonId(pp.getPersonId());
 
         System.out.println(pp.getFirstname()+pp.getLastname());
         EmployeeEntity ee = new EmployeeEntity();
@@ -256,5 +260,47 @@ public class UserRoleService {
         EmployeeEntity employeeEntity = employeeRepo.findByPersonId(user.getPersonId());
         facilityReportEntity.setEmpId(employeeEntity.getEmpId());
         facilityReportRepo.save(facilityReportEntity);
+    }
+
+    public Map<String, String> fetchApplicationWorkFlow(String email) {
+        Map<String, String> map  = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+        System.out.println(email);
+        PersonEntity personEntity = personRepo.findByEmail(email);
+        sb.append(personEntity.getLastname() + personEntity.getFirstname());
+        EmployeeEntity employeeEntity = employeeRepo.findByPersonId(personEntity.getPersonId());
+        ApplicationWorkFlowEntity applicationWorkFlowEntity =
+                applicationWorkFlowRepo.findByEmpId(employeeEntity.getEmpId());
+        if (applicationWorkFlowEntity == null) {
+            map.put("res", "");
+        } else {
+            map.put("res", sb.toString());
+        }
+        return map;
+    }
+
+    public void approveApplication(String email) {
+        PersonEntity personEntity = personRepo.findByEmail(email);
+        EmployeeEntity employeeEntity = employeeRepo.findByPersonId(personEntity.getPersonId());
+        ApplicationWorkFlowEntity applicationWorkFlowEntity =
+                applicationWorkFlowRepo.findByEmpId(employeeEntity.getEmpId());
+        applicationWorkFlowEntity.setStatus("completed");
+        applicationWorkFlowRepo.save(applicationWorkFlowEntity);
+
+    }
+
+    @Transactional
+    public void rejectApplication(String email) {
+        PersonEntity personEntity = personRepo.findByEmail(email);
+        int personId = personEntity.getPersonId();
+        EmployeeEntity employeeEntity = employeeRepo.findByPersonId(personId);
+        ApplicationWorkFlowEntity applicationWorkFlowEntity =
+                applicationWorkFlowRepo.findByEmpId(employeeEntity.getEmpId());
+        applicationWorkFlowEntity.setStatus("rejected");
+        applicationWorkFlowRepo.save(applicationWorkFlowEntity);
+        addressRepo.deleteByPersonId(personId);
+        contactRepo.deleteByPersonId(personId);
+        employeeRepo.deleteByPersonId(personId);
+        personRepo.deleteById(personId);
     }
 }

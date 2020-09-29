@@ -148,4 +148,23 @@ public class GeneralController {
     public void saveFacilityReport(@RequestParam(value = "title") String title, @RequestParam(value = "desc") String description,@RequestParam(value = "userId") int userId, @RequestParam(value = "date") String date){
         userRoleService.saveFacilityReport(userId,title,description,date,"In Progress");
     }
+
+    // Tried to find if application work flow is existed
+    @GetMapping("/fetchApplicationWorkFlow")
+    public Map<String, String> fetchApplicationWorkFlow(@RequestParam String email) {
+        return userRoleService.fetchApplicationWorkFlow(email);
+    }
+
+    // Approve it
+    @GetMapping("/approveApplication")
+    public void approveApplication(@RequestParam String email) {
+        userRoleService.approveApplication(email);
+    }
+
+    // Reject it
+    @GetMapping("/rejectApplication")
+    public void rejectApplication(@RequestParam String email) {
+        userRoleService.rejectApplication(email);
+    }
+
 }

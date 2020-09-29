@@ -10,5 +10,6 @@ import java.util.List;
 public interface ContactRepo extends JpaRepository<ContactEntity, Integer> {
     ContactEntity findByPersonId(int personId);
     List<ContactEntity> findAllByPersonId(int personId);
+    void deleteByPersonId(int personId);
 
 }

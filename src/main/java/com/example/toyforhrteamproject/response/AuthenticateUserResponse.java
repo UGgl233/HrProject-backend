@@ -13,4 +13,5 @@ public class AuthenticateUserResponse {
     boolean status;
     int userId;
     String username;
+    String role;
 }

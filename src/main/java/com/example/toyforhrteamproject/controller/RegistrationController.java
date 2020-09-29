@@ -1,5 +1,6 @@
 package com.example.toyforhrteamproject.controller;
 
+import com.example.toyforhrteamproject.response.AuthenticateUserResponse;
 import com.example.toyforhrteamproject.service.RegistrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class RegistrationController {
     }
 
     @GetMapping("/authenticate")
-    public boolean authenticateByTokenAndSave(@RequestParam String username, @RequestParam String email, @RequestParam String password,
-                                                  @RequestParam String registrationToken) {
+    public AuthenticateUserResponse authenticateByTokenAndSave(@RequestParam String username, @RequestParam String email, @RequestParam String password,
+                                                               @RequestParam String registrationToken) {
         return registrationService.authenticateByTokenAndSave(username, email, password, registrationToken);
     }
 }

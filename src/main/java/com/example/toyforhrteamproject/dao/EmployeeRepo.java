@@ -11,4 +11,5 @@ public interface EmployeeRepo extends JpaRepository<EmployeeEntity, Integer> {
     EmployeeEntity findByEmpId(int id);
     EmployeeEntity findByPersonId(int id);
     List<EmployeeEntity> findAllByHouseId(int hId);
+    void deleteByPersonId(int personId);
 }

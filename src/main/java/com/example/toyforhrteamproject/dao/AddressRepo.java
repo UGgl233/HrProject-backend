@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface AddressRepo extends JpaRepository<AddressEntity, Integer>{
     List<AddressEntity> findByPersonId(int personId);
+    void deleteByPersonId(int personId);
 }
