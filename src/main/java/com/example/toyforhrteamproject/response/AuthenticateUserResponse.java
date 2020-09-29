@@ -12,4 +12,5 @@ import lombok.ToString;
 public class AuthenticateUserResponse {
     boolean status;
     int userId;
+    String username;
 }

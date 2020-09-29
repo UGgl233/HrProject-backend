@@ -67,6 +67,7 @@ public class UserRoleService {
             if (password.equals(user.getPassword())) {
                 authenticateUserResponse.setStatus(true);
                 authenticateUserResponse.setUserId(user.getUserId());
+                authenticateUserResponse.setUsername(user.getUsername());
                 return authenticateUserResponse;
             } else {
                 authenticateUserResponse.setStatus(false);
@@ -99,8 +100,12 @@ public class UserRoleService {
         personRepo.save(pe);
         // initilzie new person from params and then save it to personEntity
 
-
         PersonEntity pp = personRepo.findByEmail(email);
+
+        // save personId in the user table
+//        UserEntity userEntity = userRepo.findByEmail(email);
+//        userEntity.setPersonId(pp.getPersonId());
+
         System.out.println(pp.getFirstname()+pp.getLastname());
         EmployeeEntity ee = new EmployeeEntity();
 //ee.setAvartar(avatar);

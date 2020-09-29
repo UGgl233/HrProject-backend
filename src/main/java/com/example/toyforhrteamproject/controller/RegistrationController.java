@@ -27,8 +27,8 @@ public class RegistrationController {
     }
 
     @GetMapping("/authenticate")
-    public boolean authenticateByPasswordAndToken(@RequestParam String email, @RequestParam String password,
+    public boolean authenticateByTokenAndSave(@RequestParam String username, @RequestParam String email, @RequestParam String password,
                                                   @RequestParam String registrationToken) {
-        return registrationService.authenticateByPasswordAndToken(email, password, registrationToken);
+        return registrationService.authenticateByTokenAndSave(username, email, password, registrationToken);
     }
 }

@@ -64,10 +64,19 @@ public class RegistrationService {
         }
     }
 
-    public boolean authenticateByPasswordAndToken(String email, String password, String registrationToken) {
+    public boolean authenticateByTokenAndSave(String username, String email, String password, String registrationToken) {
         UserEntity userEntity = userRepo.findByEmail(email);
         RegistrationTokenEntity registrationTokenEntity = registrationTokenRepo.findByEmail(email);
-        return userEntity.getPassword().equals(password) &&
-                registrationTokenEntity.getToken().equals(registrationToken);
+        if (registrationTokenEntity.getToken().equals(registrationToken)) {
+            UserEntity newUserEntity = new UserEntity();
+            newUserEntity.setEmail(email);
+            newUserEntity.setPassword(password);
+            newUserEntity.setUsername(username);
+            newUserEntity.setModificationDate(new java.sql.Date(Calendar.getInstance().getTime().getTime()));
+            newUserEntity.setCreateDate(new java.sql.Date(Calendar.getInstance().getTime().getTime()));
+            userRepo.save(newUserEntity);
+            return true;
+        }
+        return false;
     }
 }
