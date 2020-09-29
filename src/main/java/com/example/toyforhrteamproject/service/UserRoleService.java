@@ -49,6 +49,9 @@ public class UserRoleService {
     @Autowired
     private VisaStatusRepo visaStatusRepo;
 
+    @Autowired
+    private ApplicationWorkFlowRepo applicationWorkFlowRepo;
+
     public String getUserRoleByUsername(String username) {
         UserEntity user = userRepo.findByUsername(username);
         System.out.println(user.toString());
@@ -256,5 +259,60 @@ public class UserRoleService {
         EmployeeEntity employeeEntity = employeeRepo.findByPersonId(user.getPersonId());
         facilityReportEntity.setEmpId(employeeEntity.getEmpId());
         facilityReportRepo.save(facilityReportEntity);
+    }
+
+    public List<Object> getHrHousingInfo() {
+        List<Object> houseList = new ArrayList<>();
+        
+        //get House List and getFacility info for each house and get employee info for each facility
+        List<HouseEntity> houses = houseRepo.findAll();
+        for(HouseEntity hh: houses){
+            HashMap<String, Object> mm = new HashMap<>();
+            mm.put("address",hh.getAddress());
+            mm.put("numEmployees", hh.getNumberOfPerson());
+            ContactEntity cc = contactRepo.findByContactId(hh.getContactId());
+            mm.put("landlord", cc.getName());
+            mm.put("phone", cc.getPhone());
+            mm.put("email", cc.getEmail());
+            //now get facility info
+            FacilityEntity ff = facilityRepo.findByHouseId(hh.getHouseId());
+            Map<String, String> list = new HashMap<>();
+            list.put("id",ff.getFacilityId()+"");
+            list.put("description",(ff.getDescription()));
+            list.put("quantity",ff.getQuantity());
+            mm.put("facility",list);
+            //get employee list
+            List<EmployeeEntity> emp = employeeRepo.findAllByHouseId(hh.getHouseId());
+            List<Map<String,String>> list1 = new ArrayList<>();
+            for(EmployeeEntity ee: emp){
+                Map<String,String> empList = new HashMap<>();
+                PersonEntity pp = personRepo.findByPersonId(ee.getPersonId());
+                empList.put("name",pp.getFirstname()+" "+pp.getLastname());
+                empList.put("phone",pp.getCellphone());
+                empList.put("car",ee.getCar());
+                list1.add(empList);
+            }
+            mm.put("employeeList",list1);
+            houseList.add(mm);
+        }
+        return houseList;
+    }
+
+    public boolean saveApplication(int userId, String date) {
+        try {
+            ApplicationWorkFlowEntity app = new ApplicationWorkFlowEntity();
+            UserEntity uu = userRepo.findByUserId(userId);
+            EmployeeEntity ee = employeeRepo.findByPersonId(uu.getPersonId());
+
+            app.setEmpId(ee.getEmpId());
+            app.setCreatedDate(Date.valueOf(date));
+            app.setModificationDate(Date.valueOf(date));
+            app.setStatus("pending");
+            applicationWorkFlowRepo.save(app);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
     }
 }

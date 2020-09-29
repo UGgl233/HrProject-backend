@@ -148,4 +148,14 @@ public class GeneralController {
     public void saveFacilityReport(@RequestParam(value = "title") String title, @RequestParam(value = "desc") String description,@RequestParam(value = "userId") int userId, @RequestParam(value = "date") String date){
         userRoleService.saveFacilityReport(userId,title,description,date,"In Progress");
     }
+
+    @GetMapping("/hrhousing")
+    public List<Object> getHrHousingInfo(){
+        return userRoleService.getHrHousingInfo();
+    }
+
+    @PostMapping("/application")
+    public boolean saveApplication(@RequestParam(value = "userId") int userId, @RequestParam(value = "date")String date){
+        return userRoleService.saveApplication(userId, date);
+    }
 }

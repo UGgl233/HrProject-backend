@@ -11,4 +11,5 @@ public interface ContactRepo extends JpaRepository<ContactEntity, Integer> {
     ContactEntity findByPersonId(int personId);
     List<ContactEntity> findAllByPersonId(int personId);
 
+    ContactEntity findByContactId(Integer contactId);
 }
