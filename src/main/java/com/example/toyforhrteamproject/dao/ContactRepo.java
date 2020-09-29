@@ -12,4 +12,5 @@ public interface ContactRepo extends JpaRepository<ContactEntity, Integer> {
     List<ContactEntity> findAllByPersonId(int personId);
     void deleteByPersonId(int personId);
 
+    ContactEntity findByContactId(Integer contactId);
 }

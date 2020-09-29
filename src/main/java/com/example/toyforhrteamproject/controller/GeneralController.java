@@ -149,6 +149,7 @@ public class GeneralController {
         userRoleService.saveFacilityReport(userId,title,description,date,"In Progress");
     }
 
+
     // Tried to find if application work flow is existed
     @GetMapping("/fetchApplicationWorkFlow")
     public Map<String, String> fetchApplicationWorkFlow(@RequestParam String email) {
@@ -167,4 +168,14 @@ public class GeneralController {
         userRoleService.rejectApplication(email);
     }
 
+
+    @GetMapping("/hrhousing")
+    public List<Object> getHrHousingInfo(){
+        return userRoleService.getHrHousingInfo();
+    }
+
+    @PostMapping("/application")
+    public boolean saveApplication(@RequestParam(value = "userId") int userId, @RequestParam(value = "date")String date){
+        return userRoleService.saveApplication(userId, date);
+    }
 }
